@@ -14,7 +14,7 @@
 
   <template v-else>
     <!-- Initial skeleton (no cards yet at all) -->
-    <div v-if="loading && !cards?.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div v-if="loading && !cards?.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
       <div
         v-for="n in skeletonCount"
         :key="n"
@@ -47,7 +47,7 @@
     <!-- Grid — stays visible while re-fetching, just dims slightly -->
     <div
       v-else
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 transition-opacity duration-200"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 transition-opacity duration-200"
       :class="loading ? 'opacity-50 pointer-events-none' : 'opacity-100'"
     >
       <CatalogCardGridItem

@@ -1,5 +1,11 @@
 <template>
-  <div class="mobile-filter-panel">
+  <div class="filter-panel">
+
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <div class="filter-panel-header">
+      <h2 class="filter-panel-title">Filters</h2>
+      <button class="reset-all-btn" @click="emit('reset')">Reset all</button>
+    </div>
 
     <!-- ── Always-visible: Search + Sort ──────────────────────── -->
     <div class="filter-body">
@@ -46,9 +52,17 @@
           <button class="active-clear-btn" @click="emit('reset')">Clear all</button>
         </div>
         <div class="chip-wrap">
-          <span v-for="chip in activeChips" :key="chip.key" class="active-chip">
+          <span
+            v-for="chip in activeChips"
+            :key="chip.key"
+            class="active-chip"
+          >
             {{ chip.label }}
-            <button class="active-chip-remove" :aria-label="`Remove ${chip.label} filter`" @click="clearChip(chip.key)">✕</button>
+            <button
+              class="active-chip-remove"
+              :aria-label="`Remove ${chip.label} filter`"
+              @click="clearChip(chip.key)"
+            >✕</button>
           </span>
         </div>
       </div>
@@ -58,44 +72,54 @@
     <!-- ── Accordion sections ──────────────────────────────────── -->
     <div class="accordion-list">
 
-      <!-- Quick Filters -->
+      <!-- Section: Quick Filters -->
       <div class="accordion-item">
         <button class="accordion-trigger" :aria-expanded="open.has('quick')" @click="toggle('quick')">
           <span>Quick Filters</span>
-          <svg class="accordion-chevron" :class="{ rotated: open.has('quick') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="accordion-chevron" :class="{ 'rotated': open.has('quick') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         <div v-show="open.has('quick')" class="accordion-body">
 
+          <!-- Language -->
           <div class="filter-field">
             <label class="field-label">Language</label>
             <div class="grid-2col">
               <button
-                v-for="l in langOptions" :key="l.code"
-                class="pill" :class="filters.language === l.code ? 'pill-on' : 'pill-off'"
+                v-for="l in langOptions"
+                :key="l.code"
+                class="pill"
+                :class="filters.language === l.code ? 'pill-on' : 'pill-off'"
                 :aria-pressed="filters.language === l.code"
                 @click="emit('update', { language: filters.language === l.code ? '' : l.code, page: 1 })"
               >{{ l.name }}</button>
             </div>
           </div>
 
+          <!-- Variant -->
           <div class="filter-field">
             <label class="field-label">Variant</label>
             <div class="chip-wrap">
               <button
-                v-for="v in variantOptions" :key="v.value"
-                class="pill" :class="filters.variant === v.value ? 'pill-on' : 'pill-off'"
+                v-for="v in variantOptions"
+                :key="v.value"
+                class="pill"
+                :class="filters.variant === v.value ? 'pill-on' : 'pill-off'"
                 :aria-pressed="filters.variant === v.value"
                 @click="emit('update', { variant: filters.variant === v.value ? '' : v.value, page: 1 })"
               >{{ v.label }}</button>
             </div>
           </div>
 
+          <!-- Set (optional) -->
           <div v-if="showSet" class="filter-field">
             <label class="field-label">Set</label>
-            <select :value="filters.set" class="filter-select"
-              @change="emit('update', { set: ($event.target as HTMLSelectElement).value, page: 1 })">
+            <select
+              :value="filters.set"
+              class="filter-select"
+              @change="emit('update', { set: ($event.target as HTMLSelectElement).value, page: 1 })"
+            >
               <option value="">All Sets</option>
               <option v-for="s in filterOptions?.sets" :key="s.code" :value="s.code">
                 {{ s.code }} — {{ s.name }}
@@ -103,12 +127,15 @@
             </select>
           </div>
 
+          <!-- Card Type -->
           <div class="filter-field">
             <label class="field-label">Card Type</label>
             <div class="chip-wrap">
               <button
-                v-for="t in filterOptions?.card_types" :key="t.code"
-                class="pill" :class="filters.card_type === t.code ? 'pill-type' : 'pill-off'"
+                v-for="t in filterOptions?.card_types"
+                :key="t.code"
+                class="pill"
+                :class="filters.card_type === t.code ? 'pill-type' : 'pill-off'"
                 :aria-pressed="filters.card_type === t.code"
                 @click="emit('update', { card_type: filters.card_type === t.code ? '' : t.code, page: 1 })"
               >{{ t.name }}</button>
@@ -118,22 +145,25 @@
         </div>
       </div>
 
-      <!-- Card Details -->
+      <!-- Section: Card Details -->
       <div class="accordion-item">
         <button class="accordion-trigger" :aria-expanded="open.has('details')" @click="toggle('details')">
           <span>Card Details</span>
-          <svg class="accordion-chevron" :class="{ rotated: open.has('details') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="accordion-chevron" :class="{ 'rotated': open.has('details') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         <div v-show="open.has('details')" class="accordion-body">
 
+          <!-- Color — 2-col grid -->
           <div class="filter-field">
             <label class="field-label">Color</label>
             <div class="grid-2col">
               <button
-                v-for="c in filterOptions?.colors" :key="c.code"
-                class="color-pill" :class="filters.color === c.code ? 'color-pill-on' : 'color-pill-off'"
+                v-for="c in filterOptions?.colors"
+                :key="c.code"
+                class="color-pill"
+                :class="filters.color === c.code ? 'color-pill-on' : 'color-pill-off'"
                 :style="filters.color === c.code ? { backgroundColor: c.hex, borderColor: c.hex, color: '#fff' } : {}"
                 :aria-pressed="filters.color === c.code"
                 @click="emit('update', { color: filters.color === c.code ? '' : c.code, page: 1 })"
@@ -144,18 +174,23 @@
             </div>
           </div>
 
+          <!-- Rarity -->
           <div class="filter-field">
             <label class="field-label">Rarity</label>
             <div class="chip-wrap">
               <button
-                v-for="r in filterOptions?.rarities" :key="r.code"
-                class="pill" :class="filters.rarity === r.code ? 'pill-on' : 'pill-off'"
-                :aria-pressed="filters.rarity === r.code" :title="r.name"
+                v-for="r in filterOptions?.rarities"
+                :key="r.code"
+                class="pill"
+                :class="filters.rarity === r.code ? 'pill-on' : 'pill-off'"
+                :aria-pressed="filters.rarity === r.code"
+                :title="r.name"
                 @click="emit('update', { rarity: filters.rarity === r.code ? '' : r.code, page: 1 })"
               >{{ r.code }}</button>
             </div>
           </div>
 
+          <!-- Attribute -->
           <div class="filter-field">
             <label class="field-label">Attribute</label>
             <select :value="filters.attribute" class="filter-select"
@@ -165,6 +200,7 @@
             </select>
           </div>
 
+          <!-- Affiliation -->
           <div class="filter-field">
             <label class="field-label">Affiliation</label>
             <select :value="filters.affiliation" class="filter-select"
@@ -177,11 +213,11 @@
         </div>
       </div>
 
-      <!-- Stats -->
+      <!-- Section: Stats -->
       <div class="accordion-item">
         <button class="accordion-trigger" :aria-expanded="open.has('stats')" @click="toggle('stats')">
           <span>Stats</span>
-          <svg class="accordion-chevron" :class="{ rotated: open.has('stats') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="accordion-chevron" :class="{ 'rotated': open.has('stats') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
@@ -190,26 +226,34 @@
           <div class="filter-field">
             <label class="field-label">Cost</label>
             <div class="range-grid">
-              <div class="range-col"><span class="range-sublabel">Min</span>
+              <div class="range-col">
+                <span class="range-sublabel">Min</span>
                 <input :value="filters.cost_min" type="number" min="0" placeholder="0" class="filter-input text-center"
-                  @input="emit('update', { cost_min: ($event.target as HTMLInputElement).value, page: 1 })" /></div>
+                  @input="emit('update', { cost_min: ($event.target as HTMLInputElement).value, page: 1 })" />
+              </div>
               <div class="range-sep">—</div>
-              <div class="range-col"><span class="range-sublabel">Max</span>
+              <div class="range-col">
+                <span class="range-sublabel">Max</span>
                 <input :value="filters.cost_max" type="number" min="0" placeholder="10" class="filter-input text-center"
-                  @input="emit('update', { cost_max: ($event.target as HTMLInputElement).value, page: 1 })" /></div>
+                  @input="emit('update', { cost_max: ($event.target as HTMLInputElement).value, page: 1 })" />
+              </div>
             </div>
           </div>
 
           <div class="filter-field">
             <label class="field-label">Power</label>
             <div class="range-grid">
-              <div class="range-col"><span class="range-sublabel">Min</span>
+              <div class="range-col">
+                <span class="range-sublabel">Min</span>
                 <input :value="filters.power_min" type="number" step="1000" placeholder="0" class="filter-input text-center"
-                  @input="emit('update', { power_min: ($event.target as HTMLInputElement).value, page: 1 })" /></div>
+                  @input="emit('update', { power_min: ($event.target as HTMLInputElement).value, page: 1 })" />
+              </div>
               <div class="range-sep">—</div>
-              <div class="range-col"><span class="range-sublabel">Max</span>
+              <div class="range-col">
+                <span class="range-sublabel">Max</span>
                 <input :value="filters.power_max" type="number" step="1000" placeholder="12000" class="filter-input text-center"
-                  @input="emit('update', { power_max: ($event.target as HTMLInputElement).value, page: 1 })" /></div>
+                  @input="emit('update', { power_max: ($event.target as HTMLInputElement).value, page: 1 })" />
+              </div>
             </div>
           </div>
 
@@ -217,8 +261,10 @@
             <label class="field-label">Counter Value</label>
             <div class="chip-wrap">
               <button
-                v-for="c in counterOptions" :key="c.value"
-                class="pill" :class="filters.counter === c.value ? 'pill-on' : 'pill-off'"
+                v-for="c in counterOptions"
+                :key="c.value"
+                class="pill"
+                :class="filters.counter === c.value ? 'pill-on' : 'pill-off'"
                 :aria-pressed="filters.counter === c.value"
                 @click="emit('update', { counter: filters.counter === c.value ? '' : c.value, page: 1 })"
               >{{ c.label }}</button>
@@ -228,11 +274,11 @@
         </div>
       </div>
 
-      <!-- Text & Effects -->
+      <!-- Section: Text & Effects -->
       <div class="accordion-item">
         <button class="accordion-trigger" :aria-expanded="open.has('text')" @click="toggle('text')">
           <span>Text &amp; Effects</span>
-          <svg class="accordion-chevron" :class="{ rotated: open.has('text') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="accordion-chevron" :class="{ 'rotated': open.has('text') }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
@@ -251,6 +297,7 @@
       </div>
 
     </div>
+
   </div>
 </template>
 
@@ -336,16 +383,51 @@ function clearChip(key: keyof CardFiltersState) {
 </script>
 
 <style scoped>
-.mobile-filter-panel {
+/* ── Panel shell ─────────────────────────────────────────────── */
+.filter-panel {
   background: #ffffff;
+  border: 1px solid #c8d3df;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.10);
+}
+
+/* ── Panel header ────────────────────────────────────────────── */
+.filter-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f0f4f8;
+}
+.filter-panel-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+.reset-all-btn {
+  font-size: 13px;
+  color: #9ca3af;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.15s, background-color 0.15s;
+}
+.reset-all-btn:hover {
+  color: #ef4444;
+  background: #fef2f2;
 }
 
 /* ── Always-visible body ─────────────────────────────────────── */
 .filter-body {
-  padding: 20px 20px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   border-bottom: 1px solid #e2e8f0;
 }
 
@@ -376,7 +458,9 @@ function clearChip(key: keyof CardFiltersState) {
   border: none;
   transition: color 0.15s;
 }
-.active-clear-btn:hover { color: #0f172a; }
+.active-clear-btn:hover {
+  color: #0f172a;
+}
 .active-chip {
   display: inline-flex;
   align-items: center;
@@ -399,17 +483,23 @@ function clearChip(key: keyof CardFiltersState) {
   padding: 0;
   transition: color 0.15s;
 }
-.active-chip-remove:hover { color: #0f766e; }
+.active-chip-remove:hover {
+  color: #0f766e;
+}
 
 /* ── Accordion ───────────────────────────────────────────────── */
-.accordion-list { /* container */ }
-.accordion-item { border-top: 1px solid #e2e8f0; }
+.accordion-list {
+  /* nothing extra needed */
+}
+.accordion-item {
+  border-top: 1px solid #e2e8f0;
+}
 .accordion-trigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 15px 20px;
+  padding: 16px 24px;
   text-align: left;
   font-size: 14px;
   font-weight: 600;
@@ -434,12 +524,14 @@ function clearChip(key: keyof CardFiltersState) {
   flex-shrink: 0;
   transition: transform 0.2s;
 }
-.accordion-chevron.rotated { transform: rotate(180deg); }
+.accordion-chevron.rotated {
+  transform: rotate(180deg);
+}
 .accordion-body {
-  padding: 4px 20px 18px;
+  padding: 4px 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 /* ── Field + label ───────────────────────────────────────────── */
@@ -466,11 +558,12 @@ function clearChip(key: keyof CardFiltersState) {
   border: 1px solid #d1d5db;
   border-radius: 10px;
   padding: 0 14px;
-  box-sizing: border-box;
   transition: border-color 0.15s, box-shadow 0.15s;
   outline: none;
 }
-.filter-input::placeholder { color: #9ca3af; }
+.filter-input::placeholder {
+  color: #9ca3af;
+}
 .filter-input:focus {
   border-color: #0d9488;
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
@@ -493,7 +586,11 @@ function clearChip(key: keyof CardFiltersState) {
   border-color: #0d9488;
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
-.search-wrap { position: relative; }
+
+/* search icon wrapper */
+.search-wrap {
+  position: relative;
+}
 .search-icon {
   position: absolute;
   left: 12px;
@@ -504,10 +601,16 @@ function clearChip(key: keyof CardFiltersState) {
   color: #9ca3af;
   pointer-events: none;
 }
-.search-input { padding-left: 40px; }
+.search-input {
+  padding-left: 40px;
+}
 
 /* ── Chips / pills ───────────────────────────────────────────── */
-.chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .pill {
   display: inline-flex;
   align-items: center;
@@ -517,20 +620,42 @@ function clearChip(key: keyof CardFiltersState) {
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 500;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #c8d3df;
   background: white;
   color: #4b5563;
   cursor: pointer;
   transition: border-color 0.15s, background-color 0.15s, color 0.15s, box-shadow 0.15s;
   white-space: nowrap;
 }
-.pill:focus-visible { outline: 2px solid #0d9488; outline-offset: 2px; }
-.pill-off:hover { border-color: #0d9488; color: #0f766e; background: #f0fdfa; }
-.pill-on { background: #0d9488; border-color: #0d9488; color: white; box-shadow: 0 1px 3px rgba(13,148,136,0.3); }
-.pill-type { background: #1f2937; border-color: #1f2937; color: white; box-shadow: 0 1px 3px rgba(31,41,55,0.3); }
+.pill:focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+.pill-off:hover {
+  border-color: #0d9488;
+  color: #0f766e;
+  background: #f0fdfa;
+}
+.pill-on {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: white;
+  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.3);
+}
+.pill-type {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: white;
+  box-shadow: 0 1px 3px rgba(31, 41, 55, 0.3);
+}
 
 /* ── 2-col grid (language + color) ──────────────────────────── */
-.grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+/* Color pills use grid-2col but with left-aligned content */
 .color-pill {
   display: flex;
   align-items: center;
@@ -540,22 +665,54 @@ function clearChip(key: keyof CardFiltersState) {
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 500;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #c8d3df;
   background: white;
   color: #4b5563;
   cursor: pointer;
   transition: border-color 0.15s, background-color 0.15s, color 0.15s, box-shadow 0.15s;
 }
-.color-pill:focus-visible { outline: 2px solid #0d9488; outline-offset: 2px; }
-.color-pill-off:hover { border-color: #9ca3af; background: #f0f4f8; }
-.color-pill-on { box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
-.color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,0.1); }
+.color-pill:focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+.color-pill-off:hover {
+  border-color: #9ca3af;
+  background: #f0f4f8;
+}
+.color-pill-on {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
 
-/* ── Range inputs ────────────────────────────────────────────── */
-.range-grid { display: flex; align-items: flex-end; gap: 8px; }
-.range-col { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-.range-sublabel { font-size: 11px; color: #9ca3af; font-weight: 500; }
-.range-sep { font-size: 16px; color: #d1d5db; padding-bottom: 9px; flex-shrink: 0; }
+/* ── Range inputs (cost/power) ───────────────────────────────── */
+.range-grid {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.range-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.range-sublabel {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+.range-sep {
+  font-size: 16px;
+  color: #d1d5db;
+  padding-bottom: 9px;
+  flex-shrink: 0;
+}
 
 /* ── Checkboxes ──────────────────────────────────────────────── */
 .checkbox-row {
@@ -569,10 +726,15 @@ function clearChip(key: keyof CardFiltersState) {
   width: 16px;
   height: 16px;
   border-radius: 4px;
+  border: 1px solid #d1d5db;
   cursor: pointer;
   accent-color: #0d9488;
-  flex-shrink: 0;
 }
-.checkbox-row span { font-size: 14px; color: #374151; }
-.checkbox-row:hover span { color: #111827; }
+.checkbox-row span {
+  font-size: 14px;
+  color: #374151;
+}
+.checkbox-row:hover span {
+  color: #111827;
+}
 </style>
