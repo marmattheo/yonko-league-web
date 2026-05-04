@@ -17,7 +17,7 @@
           <div class="flex items-center gap-2 text-gray-400 text-sm mb-2">
             <NuxtLink to="/" class="hover:text-gray-700">Home</NuxtLink>
             <span>/</span>
-            <NuxtLink to="/sets" class="hover:text-gray-700">Sets</NuxtLink>
+            <NuxtLink to="/" class="hover:text-gray-700">Sets</NuxtLink>
             <span>/</span>
             <span class="text-gray-600">{{ setDetail.code }}</span>
           </div>
