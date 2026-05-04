@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply bg-gray-950 text-gray-100;
+    @apply bg-gray-50 text-gray-900;
   }
 
   * {
@@ -18,19 +18,19 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-950;
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white;
   }
 
   .btn-primary {
-    @apply btn bg-red-600 hover:bg-red-500 text-white focus:ring-red-500;
+    @apply btn bg-teal-700 hover:bg-teal-800 text-white focus:ring-teal-600;
   }
 
   .btn-ghost {
-    @apply btn bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700;
+    @apply btn bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 border border-gray-300;
   }
 
   .input {
-    @apply w-full bg-gray-800 border border-gray-700 text-gray-100 placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition;
+    @apply w-full bg-white border border-gray-300 text-gray-900 placeholder-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition;
   }
 
   .select {

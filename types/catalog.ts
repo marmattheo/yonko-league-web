@@ -6,6 +6,7 @@ export interface CatalogSet {
   release_date: string | null
   is_active: boolean
   total_cards?: number
+  total_printings?: number
   base_count?: number
   variant_counts?: Record<string, number>
   type_counts?: Record<string, number>
@@ -93,24 +94,32 @@ export interface CardPrinting {
   is_active: boolean
   image_url: string | null
   is_reference_image: boolean
+  variant_type?: VariantType | null
 }
 
 export interface Card {
   id: number
+  // When returned from the printings list endpoint, id = printing id
+  printing_id?: number
+  card_id?: number
+  is_parallel?: boolean
+  is_promo?: boolean
+  finish_profile?: string | null
+  language?: Language | null
   card_name: string
   card_number: string
   display_number: string
-  set_code_id: number
+  set_code_id?: number
   set_code: CatalogSet | null
-  card_type_id: number
+  card_type_id?: number
   card_type: CardType | null
-  rarity_id: number
+  rarity_id?: number
   rarity: Rarity | null
-  variant_type_id: number | null
+  variant_type_id?: number | null
   variant_type: VariantType | null
-  attribute_id: number | null
+  attribute_id?: number | null
   attribute: Attribute | null
-  exclusive_language_id: number | null
+  exclusive_language_id?: number | null
   leader_life: number | null
   card_cost: number | null
   card_power: number | null
@@ -118,11 +127,11 @@ export interface Card {
   artist: string | null
   effect_text: string | null
   trigger_text: string | null
-  is_active: boolean
+  is_active?: boolean
   colors: Color[]
   affiliations: Affiliation[]
-  effects: CardEffect[]
-  printings: CardPrinting[]
+  effects?: CardEffect[]
+  printings?: CardPrinting[]
   primary_image_url: string | null
 }
 
@@ -156,6 +165,7 @@ export interface CardFiltersState {
   attribute: string
   affiliation: string
   variant: string
+  language: string
   cost_min: string
   cost_max: string
   power_min: string

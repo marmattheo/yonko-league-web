@@ -24,7 +24,7 @@
     <!-- Rarity -->
     <span
       v-if="rarity"
-      class="card-badge bg-gray-700 text-gray-200"
+      class="card-badge bg-gray-200 text-gray-700"
     >
       {{ rarity.code }}
     </span>
@@ -53,7 +53,7 @@ defineProps<{
 function cardTypeClass(code: string): string {
   const map: Record<string, string> = {
     LEADER:    'bg-yellow-600 text-yellow-100',
-    CHARACTER: 'bg-blue-700 text-blue-100',
+    CHARACTER: 'bg-teal-700 text-teal-100',
     EVENT:     'bg-purple-700 text-purple-100',
     STAGE:     'bg-green-700 text-green-100',
     DON:       'bg-red-700 text-red-100',
@@ -63,12 +63,12 @@ function cardTypeClass(code: string): string {
 
 function variantClass(code: string): string {
   const map: Record<string, string> = {
-    PARALLEL:  'bg-indigo-600 text-indigo-100',
-    MANGA:     'bg-orange-600 text-orange-100',
-    SP_CARD:   'bg-pink-600 text-pink-100',
-    ALT_ART:   'bg-teal-600 text-teal-100',
-    SIGNATURE: 'bg-amber-600 text-amber-100',
+    PARALLEL:  'bg-indigo-100 text-indigo-700',
+    MANGA:     'bg-orange-100 text-orange-700',
+    SP_CARD:   'bg-pink-100 text-pink-700',
+    ALT_ART:   'bg-teal-100 text-teal-700',
+    SIGNATURE: 'bg-amber-100 text-amber-700',
   }
-  return map[code] ?? 'bg-gray-600 text-gray-200'
+  return map[code] ?? 'bg-gray-100 text-gray-700'
 }
 </script>

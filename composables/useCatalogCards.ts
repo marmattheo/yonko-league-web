@@ -22,6 +22,7 @@ export const useCatalogCards = () => {
     if (params.attribute)    query.attribute = params.attribute
     if (params.affiliation)  query.affiliation = params.affiliation
     if (params.variant)      query.variant = params.variant
+    if (params.language)     query.language = params.language
     if (params.cost_min)     query.cost_min = params.cost_min
     if (params.cost_max)     query.cost_max = params.cost_max
     if (params.power_min)    query.power_min = params.power_min

@@ -1,83 +1,43 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex flex-col lg:flex-row gap-8">
-      <!-- Sidebar filters -->
-      <aside class="lg:w-64 shrink-0">
-        <div class="sticky top-20">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-base font-semibold text-white">Filters</h2>
-            <!-- Mobile toggle -->
-            <button
-              class="lg:hidden text-sm text-gray-400 hover:text-white"
-              @click="filtersOpen = !filtersOpen"
-            >
-              {{ filtersOpen ? 'Hide' : 'Show' }}
-            </button>
-          </div>
-          <div :class="filtersOpen ? 'block' : 'hidden lg:block'">
-            <CatalogCardFilters
-              :filters="activeFilters"
-              :filter-options="filterOptions"
-              @update="updateFilters"
-              @reset="resetFilters"
-            />
-          </div>
-        </div>
-      </aside>
+  <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page header -->
+    <div class="mb-5">
+      <h1 class="text-2xl font-bold text-gray-900">All Cards</h1>
+      <p v-if="result" class="text-gray-500 text-sm mt-0.5">{{ result.total.toLocaleString() }} cards</p>
+    </div>
 
-      <!-- Main content -->
-      <div class="flex-1 min-w-0">
-        <!-- Toolbar -->
-        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
-          <div>
-            <h1 class="text-2xl font-bold text-white">All Cards</h1>
-            <p v-if="result" class="text-gray-500 text-sm mt-0.5">
-              {{ result.total.toLocaleString() }} cards
-            </p>
-          </div>
-          <CatalogCardSort v-model="activeFilters.sort" @update:model-value="updateFilters({ sort: $event, page: 1 })" />
-        </div>
+    <!-- Horizontal filter bar -->
+    <CatalogCardFilterBar
+      :filters="activeFilters"
+      :filter-options="filterOptions"
+      @update="updateFilters"
+      @reset="resetFilters"
+    />
 
-        <!-- Active filter chips -->
-        <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 mb-4">
-          <span
-            v-for="chip in activeFilterChips"
-            :key="chip.key"
-            class="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300"
-          >
-            {{ chip.label }}
-            <button class="ml-1 text-gray-500 hover:text-white" @click="updateFilters({ [chip.key]: '', page: 1 })">✕</button>
-          </span>
-        </div>
+    <!-- Card grid -->
+    <CatalogCardGrid
+      :cards="result?.data"
+      :loading="pending"
+      :error="error"
+    />
 
-        <!-- Card grid -->
-        <CatalogCardGrid
-          :cards="result?.data"
-          :loading="pending"
-          :error="error"
-        />
-
-        <!-- Pagination -->
-        <div v-if="result && result.last_page > 1" class="flex items-center justify-center gap-2 mt-10">
-          <button
-            :disabled="result.current_page <= 1"
-            class="btn-ghost px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-            @click="updateFilters({ page: result!.current_page - 1 })"
-          >
-            ← Prev
-          </button>
-          <span class="text-gray-400 text-sm">
-            Page {{ result.current_page }} of {{ result.last_page }}
-          </span>
-          <button
-            :disabled="result.current_page >= result.last_page"
-            class="btn-ghost px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-            @click="updateFilters({ page: result!.current_page + 1 })"
-          >
-            Next →
-          </button>
-        </div>
-      </div>
+    <!-- Pagination -->
+    <div v-if="result && result.last_page > 1" class="flex items-center justify-center gap-2 mt-10">
+      <button
+        :disabled="result.current_page <= 1"
+        class="btn-ghost px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+        @click="updateFilters({ page: result!.current_page - 1 })"
+      >
+        ← Prev
+      </button>
+      <span class="text-gray-500 text-sm">Page {{ result.current_page }} of {{ result.last_page }}</span>
+      <button
+        :disabled="result.current_page >= result.last_page"
+        class="btn-ghost px-3 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+        @click="updateFilters({ page: result!.current_page + 1 })"
+      >
+        Next →
+      </button>
     </div>
   </div>
 </template>
@@ -87,56 +47,73 @@ import type { CardFiltersState } from '~/types/catalog'
 
 useHead({ title: 'All Cards' })
 
-const filtersOpen = ref(false)
+const router = useRouter()
+const route = useRoute()
 
-const DEFAULT_FILTERS: CardFiltersState = {
-  search: '', set: '', card_type: '', color: '', rarity: '',
-  attribute: '', affiliation: '', variant: '',
-  cost_min: '', cost_max: '', power_min: '', power_max: '',
-  counter: '', leader_life: '', has_effect: '', has_trigger: '',
-  sort: 'card_number_asc', page: 1, per_page: 48,
+const PER_PAGE = 48
+
+function queryToFilters(q: typeof route.query): CardFiltersState {
+  return {
+    search:      String(q.search      || ''),
+    set:         String(q.set         || ''),
+    card_type:   String(q.card_type   || ''),
+    color:       String(q.color       || ''),
+    rarity:      String(q.rarity      || ''),
+    attribute:   String(q.attribute   || ''),
+    affiliation: String(q.affiliation || ''),
+    variant:     String(q.variant     || ''),
+    language:    String(q.language    || ''),
+    cost_min:    String(q.cost_min    || ''),
+    cost_max:    String(q.cost_max    || ''),
+    power_min:   String(q.power_min   || ''),
+    power_max:   String(q.power_max   || ''),
+    counter:     String(q.counter     || ''),
+    leader_life: String(q.leader_life || ''),
+    has_effect:  String(q.has_effect  || ''),
+    has_trigger: String(q.has_trigger || ''),
+    sort:        String(q.sort        || 'card_number_asc'),
+    page:        Number(q.page        || 1),
+    per_page:    PER_PAGE,
+  }
 }
 
-const activeFilters = reactive<CardFiltersState>({ ...DEFAULT_FILTERS })
+const activeFilters = computed(() => queryToFilters(route.query))
+
+// Redirect to ?language=EN if no language in URL (default view, avoids duplicates)
+if (!route.query.language) {
+  await router.replace({ query: { ...route.query, language: 'EN' } })
+}
 
 const { result, pending, error, fetch } = useCatalogCards()
 const { filters: filterOptions, fetch: fetchFilters } = useCatalogFilters()
 
 await Promise.all([
   fetchFilters(),
-  fetch(activeFilters),
+  fetch(activeFilters.value),
 ])
 
-const hasActiveFilters = computed(() =>
-  !!(activeFilters.search || activeFilters.set || activeFilters.card_type ||
-     activeFilters.color || activeFilters.rarity || activeFilters.attribute ||
-     activeFilters.affiliation || activeFilters.variant || activeFilters.cost_min ||
-     activeFilters.cost_max || activeFilters.power_min || activeFilters.power_max ||
-     activeFilters.has_effect || activeFilters.has_trigger)
-)
-
-const activeFilterChips = computed(() => {
-  const chips: { key: keyof CardFiltersState; label: string }[] = []
-  if (activeFilters.search)     chips.push({ key: 'search',     label: `"${activeFilters.search}"` })
-  if (activeFilters.set)        chips.push({ key: 'set',        label: `Set: ${activeFilters.set}` })
-  if (activeFilters.card_type)  chips.push({ key: 'card_type',  label: `Type: ${activeFilters.card_type}` })
-  if (activeFilters.color)      chips.push({ key: 'color',      label: `Color: ${activeFilters.color}` })
-  if (activeFilters.rarity)     chips.push({ key: 'rarity',     label: `Rarity: ${activeFilters.rarity}` })
-  if (activeFilters.attribute)  chips.push({ key: 'attribute',  label: `Attr: ${activeFilters.attribute}` })
-  if (activeFilters.affiliation)chips.push({ key: 'affiliation',label: `Affil: ${activeFilters.affiliation}` })
-  if (activeFilters.variant)    chips.push({ key: 'variant',    label: `Variant: ${activeFilters.variant}` })
-  if (activeFilters.has_effect) chips.push({ key: 'has_effect', label: 'Has Effect' })
-  if (activeFilters.has_trigger)chips.push({ key: 'has_trigger',label: 'Has Trigger' })
-  return chips
-})
+// Re-fetch when URL query changes (back/forward navigation)
+watch(() => route.query, (newQ, oldQ) => {
+  if (newQ.page !== oldQ.page) window.scrollTo({ top: 0, behavior: 'smooth' })
+  fetch(activeFilters.value)
+}, { deep: true })
 
 function updateFilters(partial: Partial<CardFiltersState>) {
-  Object.assign(activeFilters, partial)
-  fetch(activeFilters)
+  const next: Record<string, string> = {}
+  const merged = { ...queryToFilters(route.query), ...partial }
+  for (const [k, v] of Object.entries(merged)) {
+    if (k === 'per_page') continue
+    if (v === '' || v === null || v === undefined) continue
+    if (k === 'page' && Number(v) === 1) continue
+    if (k === 'sort' && v === 'card_number_asc') continue
+    next[k] = String(v)
+  }
+  router.replace({ query: next })
 }
 
 function resetFilters() {
-  Object.assign(activeFilters, { ...DEFAULT_FILTERS })
-  fetch(activeFilters)
+  router.replace({ query: { language: 'EN' } })
 }
 </script>
+
+

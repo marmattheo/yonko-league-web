@@ -1,25 +1,25 @@
 <template>
-  <div class="bg-gray-900 rounded-xl border border-gray-800 p-4 space-y-2">
+  <div class="bg-white rounded-xl border border-gray-200 p-4 space-y-2 hover:border-gray-300 transition-colors">
     <!-- Header row -->
     <div class="flex items-start justify-between gap-4">
       <div>
-        <NuxtLink :to="`/sets/${set.code.toLowerCase()}`" class="text-lg font-bold text-white hover:text-red-400 transition-colors">
+        <NuxtLink :to="`/sets/${set.code.toLowerCase()}`" class="text-lg font-bold text-gray-900 hover:text-teal-700 transition-colors">
           {{ set.name }}
         </NuxtLink>
-        <p class="text-xs text-gray-500 mt-0.5">{{ set.code }} · {{ set.series }}</p>
+        <p class="text-xs text-gray-600 font-medium mt-0.5">{{ set.code }} · {{ set.series }}</p>
       </div>
-      <span v-if="set.release_date" class="text-xs text-gray-500 shrink-0">
+      <span v-if="set.release_date" class="text-xs text-gray-400 shrink-0">
         {{ formatDate(set.release_date) }}
       </span>
     </div>
 
     <!-- Stats row -->
-    <div v-if="set.total_cards !== undefined" class="flex flex-wrap gap-3 text-sm">
-      <span class="text-gray-300"><span class="text-white font-semibold">{{ set.total_cards }}</span> cards</span>
-      <span v-if="set.base_count" class="text-gray-300"><span class="text-white font-semibold">{{ set.base_count }}</span> base</span>
+    <div v-if="cardCount !== undefined" class="flex flex-wrap gap-3 text-sm">
+      <span class="text-gray-600"><span class="text-gray-900 font-semibold">{{ cardCount }}</span> cards</span>
+      <span v-if="set.base_count" class="text-gray-600"><span class="text-gray-900 font-semibold">{{ set.base_count }}</span> base</span>
       <template v-if="set.variant_counts">
-        <span v-for="(count, code) in set.variant_counts" :key="code" class="text-gray-300">
-          <span class="text-white font-semibold">{{ count }}</span> {{ code.toLowerCase().replace('_', ' ') }}
+        <span v-for="(count, code) in set.variant_counts" :key="code" class="text-gray-600">
+          <span class="text-gray-900 font-semibold">{{ count }}</span> {{ code.toLowerCase().replace('_', ' ') }}
         </span>
       </template>
     </div>
@@ -34,7 +34,8 @@
 <script setup lang="ts">
 import type { CatalogSet } from '~/types/catalog'
 
-defineProps<{ set: CatalogSet }>()
+const props = defineProps<{ set: CatalogSet }>()
+const cardCount = computed(() => props.set.total_printings ?? props.set.total_cards)
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })

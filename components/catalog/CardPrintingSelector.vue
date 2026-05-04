@@ -5,23 +5,23 @@
       :key="printing.id"
       class="flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all"
       :class="selected?.id === printing.id
-        ? 'border-red-500 bg-red-500/10 text-white'
-        : 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'"
+        ? 'border-teal-600 bg-teal-50 text-teal-700'
+        : 'border-gray-200 text-gray-600 bg-white hover:border-gray-400 hover:text-gray-900'"
       @click="emit('select', printing)"
     >
       <!-- Language badge -->
       <span
         v-if="printing.language"
-        class="px-1.5 py-0.5 rounded text-xs font-bold bg-gray-700 text-gray-300"
+        class="px-1.5 py-0.5 rounded text-xs font-bold bg-gray-100 text-gray-600"
       >
-        {{ printing.language.code }}
+        {{ languageLabel(printing.language) }}
       </span>
 
       <!-- Variant label -->
       <span>{{ variantLabel(printing) }}</span>
 
       <!-- Finish tags -->
-      <span v-if="printing.finishes?.length" class="text-gray-500">
+      <span v-if="printing.finishes?.length" class="text-gray-400">
         · {{ printing.finishes.map(f => f.code).join('/') }}
       </span>
     </button>
@@ -40,7 +40,19 @@ const emit = defineEmits<{ select: [printing: CardPrinting] }>()
 
 function variantLabel(p: CardPrinting): string {
   if (p.is_promo) return 'Promo'
-  if (p.is_parallel) return 'Parallel'
+  if (p.is_parallel) {
+    const code = p.variant_type?.code
+    if (code === 'MANGA') return 'Manga'
+    if (code === 'SP_CARD') return 'SP'
+    if (code === 'ALT_ART') return 'Alt Art'
+    return 'Parallel'
+  }
   return 'Base'
+}
+
+function languageLabel(lang: { code: string; name?: string }): string {
+  // Use short friendly labels
+  const shorts: Record<string, string> = { ZH_HANS: 'SC', ZH_HANT: 'TC' }
+  return shorts[lang.code] ?? lang.code
 }
 </script>

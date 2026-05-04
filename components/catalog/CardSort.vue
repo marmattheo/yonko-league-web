@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center gap-2">
-    <label class="text-xs text-gray-400 font-medium uppercase tracking-wide shrink-0">Sort</label>
+    <label class="text-xs text-gray-500 font-semibold uppercase tracking-wide shrink-0">Sort</label>
     <select
       :value="modelValue"
       class="select text-sm"
