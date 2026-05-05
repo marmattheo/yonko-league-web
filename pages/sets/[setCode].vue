@@ -39,18 +39,18 @@
               <div class="text-xl font-bold text-teal-700">{{ setDetail.total_printings ?? setDetail.total_cards }}</div>
               <div class="text-xs text-teal-600 mt-0.5">Total</div>
             </div>
-            <div class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center min-w-[64px]">
-              <div class="text-xl font-bold text-gray-900">{{ setDetail.base_count ?? '—' }}</div>
-              <div class="text-xs text-gray-500 mt-0.5">Normal</div>
-            </div>
             <template v-if="setDetail.variant_counts">
-              <div
-                v-for="(count, code) in setDetail.variant_counts"
-                :key="code"
-                class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center min-w-[64px]"
-              >
-                <div class="text-xl font-bold text-gray-900">{{ count }}</div>
-                <div class="text-xs text-gray-500 mt-0.5 capitalize">{{ String(code).toLowerCase().replace('_', ' ') }}</div>
+              <div v-if="setDetail.variant_counts.base" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center min-w-[64px]">
+                <div class="text-xl font-bold text-gray-900">{{ setDetail.variant_counts.base }}</div>
+                <div class="text-xs text-gray-500 mt-0.5">Base</div>
+              </div>
+              <div v-if="setDetail.variant_counts.alt_art" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center min-w-[64px]">
+                <div class="text-xl font-bold text-gray-900">{{ setDetail.variant_counts.alt_art }}</div>
+                <div class="text-xs text-gray-500 mt-0.5">Alt Art</div>
+              </div>
+              <div v-if="setDetail.variant_counts.manga" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center min-w-[64px]">
+                <div class="text-xl font-bold text-gray-900">{{ setDetail.variant_counts.manga }}</div>
+                <div class="text-xs text-gray-500 mt-0.5">Manga</div>
               </div>
             </template>
           </div>
