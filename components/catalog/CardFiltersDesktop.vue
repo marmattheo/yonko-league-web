@@ -387,10 +387,10 @@ function clearChip(key: keyof CardFiltersState) {
 /* ── Panel shell ─────────────────────────────────────────────── */
 .filter-panel {
   background: #ffffff;
-  border: 1px solid #c8d3df;
+  border: 1px solid #b0bec9;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
 }
 
 /* ── Panel header ────────────────────────────────────────────── */
@@ -399,8 +399,8 @@ function clearChip(key: keyof CardFiltersState) {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px 16px;
-  border-bottom: 1px solid #e2e8f0;
-  background: #f0f4f8;
+  border-bottom: 1px solid #cdd5de;
+  background: #eaf0f6;
 }
 .filter-panel-title {
   font-size: 18px;
@@ -429,7 +429,7 @@ function clearChip(key: keyof CardFiltersState) {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #cdd5de;
 }
 
 /* ── Active filters box ──────────────────────────────────────── */
@@ -493,7 +493,7 @@ function clearChip(key: keyof CardFiltersState) {
   /* nothing extra needed */
 }
 .accordion-item {
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #cdd5de;
 }
 .accordion-trigger {
   display: flex;
@@ -556,7 +556,7 @@ function clearChip(key: keyof CardFiltersState) {
   font-size: 14px;
   color: #1f2937;
   background: white;
-  border: 1px solid #d1d5db;
+  border: 1px solid #b8c4cf;
   border-radius: 10px;
   padding: 0 14px;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -575,7 +575,7 @@ function clearChip(key: keyof CardFiltersState) {
   font-size: 14px;
   color: #1f2937;
   background: white;
-  border: 1px solid #d1d5db;
+  border: 1px solid #b8c4cf;
   border-radius: 10px;
   padding: 0 14px;
   cursor: pointer;
@@ -621,7 +621,7 @@ function clearChip(key: keyof CardFiltersState) {
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 500;
-  border: 1px solid #c8d3df;
+  border: 1px solid #b8c4cf;
   background: white;
   color: #4b5563;
   cursor: pointer;
@@ -666,7 +666,7 @@ function clearChip(key: keyof CardFiltersState) {
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 500;
-  border: 1px solid #c8d3df;
+  border: 1px solid #b8c4cf;
   background: white;
   color: #4b5563;
   cursor: pointer;
