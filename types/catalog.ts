@@ -7,7 +7,6 @@ export interface CatalogSet {
   is_active: boolean
   total_cards?: number
   total_printings?: number
-  base_count?: number
   variant_counts?: { base: number; alt_art: number; manga: number }
   type_counts?: Record<string, number>
 }
