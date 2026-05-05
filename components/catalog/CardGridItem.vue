@@ -66,7 +66,7 @@ const isVariant = computed(() =>
 const variantLabel = computed(() => {
   if (!isVariant.value) return null
   const code = props.card.variant_type?.code
-  if (code === 'MANGA') return 'Manga'
+  if (code === 'MANGA') return 'Alt Art · Manga'
   if (code === 'SP_CARD') return 'SP'
   return 'Alt Art'
 })
