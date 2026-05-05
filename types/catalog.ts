@@ -8,7 +8,7 @@ export interface CatalogSet {
   total_cards?: number
   total_printings?: number
   base_count?: number
-  variant_counts?: Record<string, number>
+  variant_counts?: { base: number; alt_art: number; manga: number }
   type_counts?: Record<string, number>
 }
 
@@ -86,15 +86,15 @@ export interface CardPrinting {
   card_id: number
   language_id: number | null
   language: Language | null
-  finish_profile: string | null
+  variant_type_id: number | null
+  variant_type: VariantType | null
+  parallel_index: number | null
   finishes: Finish[]
-  is_parallel: boolean
   is_promo: boolean
   notes: string | null
   is_active: boolean
   image_url: string | null
   is_reference_image: boolean
-  variant_type?: VariantType | null
 }
 
 export interface Card {
@@ -102,9 +102,9 @@ export interface Card {
   // When returned from the printings list endpoint, id = printing id
   printing_id?: number
   card_id?: number
-  is_parallel?: boolean
+  variant_type?: VariantType | null
+  parallel_index?: number | null
   is_promo?: boolean
-  finish_profile?: string | null
   language?: Language | null
   card_name: string
   card_number: string
@@ -115,8 +115,6 @@ export interface Card {
   card_type: CardType | null
   rarity_id?: number
   rarity: Rarity | null
-  variant_type_id?: number | null
-  variant_type: VariantType | null
   attribute_id?: number | null
   attribute: Attribute | null
   exclusive_language_id?: number | null

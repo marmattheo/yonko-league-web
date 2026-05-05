@@ -15,13 +15,10 @@
 
     <!-- Stats row -->
     <div v-if="cardCount !== undefined" class="flex flex-wrap gap-3 text-sm">
-      <span class="text-gray-600"><span class="text-gray-900 font-semibold">{{ cardCount }}</span> cards</span>
-      <span v-if="set.base_count" class="text-gray-600"><span class="text-gray-900 font-semibold">{{ set.base_count }}</span> base</span>
-      <template v-if="set.variant_counts">
-        <span v-for="(count, code) in set.variant_counts" :key="code" class="text-gray-600">
-          <span class="text-gray-900 font-semibold">{{ count }}</span> {{ code.toLowerCase().replace('_', ' ') }}
-        </span>
-      </template>
+      <span class="text-gray-600"><span class="text-gray-900 font-semibold">{{ cardCount }}</span> total</span>
+      <span v-if="set.variant_counts?.base" class="text-gray-600"><span class="text-gray-900 font-semibold">{{ set.variant_counts.base }}</span> base</span>
+      <span v-if="set.variant_counts?.alt_art" class="text-gray-600"><span class="text-gray-900 font-semibold">{{ set.variant_counts.alt_art }}</span> alt art</span>
+      <span v-if="set.variant_counts?.manga" class="text-gray-600"><span class="text-gray-900 font-semibold">{{ set.variant_counts.manga }}</span> manga</span>
     </div>
 
     <!-- Browse button -->

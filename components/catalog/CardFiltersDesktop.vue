@@ -340,7 +340,8 @@ const langOptions = [
 ]
 const variantOptions = [
   { value: 'NORMAL',   label: 'Base' },
-  { value: 'PARALLEL', label: 'Parallel' },
+  { value: 'ALT_ART',  label: 'Alt Art' },
+  { value: 'MANGA',    label: 'Manga' },
 ]
 const counterOptions = [
   { value: '1000', label: '+1,000' },
@@ -366,7 +367,7 @@ const activeChips = computed(() => {
   if (f.rarity)               chips.push({ key: 'rarity',      label: f.rarity })
   if (f.attribute)            chips.push({ key: 'attribute',   label: f.attribute })
   if (f.affiliation)          chips.push({ key: 'affiliation', label: f.affiliation })
-  if (f.variant)              chips.push({ key: 'variant',     label: f.variant === 'NORMAL' ? 'Base' : 'Parallel' })
+  if (f.variant)              chips.push({ key: 'variant',     label: f.variant === 'NORMAL' ? 'Base' : f.variant === 'MANGA' ? 'Manga' : 'Alt Art' })
   if (f.counter)              chips.push({ key: 'counter',     label: `Counter +${f.counter}` })
   if (f.language) {
     const name = langOptions.find(l => l.code === f.language)?.name ?? f.language

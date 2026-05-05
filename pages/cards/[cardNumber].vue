@@ -205,7 +205,7 @@ function pickPrinting(printingId: number | null): CardPrinting | null {
   if (printingId !== null) {
     return printings.find(p => p.id === printingId) ?? printings[0] ?? null
   }
-  return printings.find(p => !p.is_parallel) ?? printings[0] ?? null
+  return printings.find(p => p.variant_type?.code === 'NORMAL' || p.variant_type == null) ?? printings[0] ?? null
 }
 
 const selectedPrinting = ref<CardPrinting | null>(pickPrinting(printingQuery.value))
@@ -215,7 +215,7 @@ watch(printingQuery, (id) => {
 })
 
 function selectPrinting(printing: CardPrinting) {
-  const isBase = !printing.is_parallel && !printing.is_promo
+  const isBase = (printing.variant_type?.code === 'NORMAL' || printing.variant_type == null) && !printing.is_promo
   router.replace({ query: isBase ? {} : { printing: printing.id } })
 }
 

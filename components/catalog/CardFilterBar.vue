@@ -257,7 +257,7 @@
         class="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 border border-teal-200 rounded-full text-xs text-teal-700"
       >
         {{ chip.label }}
-        <button class="ml-0.5 hover:text-teal-900" @click="clearChip(chip.key)">✕</button>
+        <button class="ml-0.5 cursor-pointer hover:text-teal-900" @click="clearChip(chip.key)">✕</button>
       </span>
     </div>
   </div>

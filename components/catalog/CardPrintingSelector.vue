@@ -40,13 +40,11 @@ const emit = defineEmits<{ select: [printing: CardPrinting] }>()
 
 function variantLabel(p: CardPrinting): string {
   if (p.is_promo) return 'Promo'
-  if (p.is_parallel) {
-    const code = p.variant_type?.code
-    if (code === 'MANGA') return 'Manga'
-    if (code === 'SP_CARD') return 'SP'
-    if (code === 'ALT_ART') return 'Alt Art'
-    return 'Parallel'
-  }
+  const code = p.variant_type?.code
+  if (code === 'MANGA') return 'Manga'
+  if (code === 'SP_CARD') return 'SP'
+  if (code === 'ALT_ART') return 'Alt Art'
+  if (code === 'PARALLEL') return 'Parallel'
   return 'Base'
 }
 

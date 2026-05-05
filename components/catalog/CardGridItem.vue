@@ -60,7 +60,7 @@ import type { Card } from '~/types/catalog'
 const props = defineProps<{ card: Card }>()
 
 const isVariant = computed(() =>
-  props.card.is_parallel || (props.card.variant_type?.code && props.card.variant_type.code !== 'NORMAL')
+  props.card.variant_type?.code && props.card.variant_type.code !== 'NORMAL'
 )
 
 const variantLabel = computed(() => {
@@ -68,7 +68,6 @@ const variantLabel = computed(() => {
   const code = props.card.variant_type?.code
   if (code === 'MANGA') return 'Manga'
   if (code === 'SP_CARD') return 'SP'
-  if (code === 'ALT_ART') return 'Alt Art'
   return 'Alt Art'
 })
 
