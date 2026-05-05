@@ -128,6 +128,7 @@ useHead({ title: 'All Cards — Yonko League' })
 const router = useRouter()
 const route = useRoute()
 const mobileFiltersOpen = ref(false)
+const { userClearedLanguage } = useCatalogSession()
 
 const PER_PAGE = 48
 
@@ -156,7 +157,19 @@ function queryToFilters(q: typeof route.query): CardFiltersState {
   }
 }
 
-const activeFilters = computed(() => queryToFilters(route.query))
+const activeFilters = computed(() => {
+  const f = queryToFilters(route.query)
+  return f
+})
+
+// On mount: write the EN default to the URL if no language is set and the user
+// hasn't explicitly cleared it this session. This makes the URL the single
+// source of truth for all filter state.
+onMounted(() => {
+  if (!route.query.language && !userClearedLanguage.value) {
+    router.replace({ query: { ...route.query, language: 'EN' } })
+  }
+})
 
 const activeFilterCount = computed(() => {
   const f = activeFilters.value
@@ -166,10 +179,6 @@ const activeFilterCount = computed(() => {
     f.has_effect, f.has_trigger,
   ].filter(Boolean).length
 })
-
-if (!route.query.language) {
-  await router.replace({ query: { ...route.query, language: 'EN' } })
-}
 
 const { result, pending, error, fetch } = useCatalogCards()
 const { filters: filterOptions, fetch: fetchFilters } = useCatalogFilters()
@@ -182,6 +191,15 @@ watch(() => route.query, (newQ, oldQ) => {
 }, { deep: true })
 
 function updateFilters(partial: Partial<CardFiltersState>) {
+  // If user is explicitly clearing the language filter, set the session flag
+  // so the EN default is not re-injected on future navigations this session.
+  if ('language' in partial && (partial.language === '' || partial.language === null || partial.language === undefined)) {
+    userClearedLanguage.value = true
+  } else if ('language' in partial && partial.language) {
+    // User picked a language — clear the flag (they have an explicit choice now)
+    userClearedLanguage.value = false
+  }
+
   const next: Record<string, string> = {}
   const merged = { ...queryToFilters(route.query), ...partial }
   for (const [k, v] of Object.entries(merged)) {
@@ -195,6 +213,7 @@ function updateFilters(partial: Partial<CardFiltersState>) {
 }
 
 function resetFilters() {
+  userClearedLanguage.value = false
   router.replace({ query: { language: 'EN' } })
 }
 </script>

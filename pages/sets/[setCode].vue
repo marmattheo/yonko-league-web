@@ -181,6 +181,7 @@ const router = useRouter()
 const route = useRoute()
 const setCode = computed(() => String(route.params.setCode).toUpperCase())
 const mobileFiltersOpen = ref(false)
+const { userClearedLanguage } = useCatalogSession()
 
 const setDetail = ref<CatalogSet | null>(null)
 const setLoading = ref(true)
@@ -222,7 +223,18 @@ function queryToFilters(q: typeof route.query): CardFiltersState {
   }
 }
 
-const activeFilters = computed(() => queryToFilters(route.query))
+const activeFilters = computed(() => {
+  const f = queryToFilters(route.query)
+  return f
+})
+
+// On mount: write the EN default to the URL if no language is set and the user
+// hasn't explicitly cleared it this session.
+onMounted(() => {
+  if (!route.query.language && !userClearedLanguage.value) {
+    router.replace({ query: { ...route.query, language: 'EN' } })
+  }
+})
 
 const activeFilterCount = computed(() => {
   const f = activeFilters.value
@@ -232,10 +244,6 @@ const activeFilterCount = computed(() => {
     f.has_effect, f.has_trigger,
   ].filter(Boolean).length
 })
-
-if (!route.query.language) {
-  await router.replace({ query: { ...route.query, language: 'EN' } })
-}
 
 const { result, pending, error, fetch } = useCatalogCards()
 const { filters: filterOptions, fetch: fetchFilters } = useCatalogFilters()
@@ -259,6 +267,12 @@ function formatDate(d: string) {
 }
 
 function updateFilters(partial: Partial<CardFiltersState>) {
+  if ('language' in partial && (partial.language === '' || partial.language === null || partial.language === undefined)) {
+    userClearedLanguage.value = true
+  } else if ('language' in partial && partial.language) {
+    userClearedLanguage.value = false
+  }
+
   const next: Record<string, string> = {}
   const merged = { ...queryToFilters(route.query), ...partial }
   for (const [k, v] of Object.entries(merged)) {
@@ -272,6 +286,7 @@ function updateFilters(partial: Partial<CardFiltersState>) {
 }
 
 function resetFilters() {
+  userClearedLanguage.value = false
   router.replace({ query: { language: 'EN' } })
 }
 </script>
